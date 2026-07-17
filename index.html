@@ -233,6 +233,14 @@
       <textarea id="note" rows="2" maxlength="200" placeholder="e.g. Free after 7pm once the kids are down"></textarea>
     </div>
 
+    <div class="card">
+      <div class="step"><span class="n">4</span>
+        <div><h2>Where should we go?</h2><small>Your voice matters. Your vote doesn't.</small></div>
+      </div>
+      <div class="chips" id="venueChips"></div>
+      <p class="hint" id="venueVerdict" style="display:none"></p>
+    </div>
+
     <button class="cta" id="submitBtn" onclick="submitResponse()">Lock it in 🔒</button>
     <p class="error-msg" id="errorMsg"></p>
 
@@ -251,6 +259,7 @@
         <div><h2>Best nights so far</h2><small>Ranked by dad-availability. Democracy in action.</small></div>
       </div>
       <div class="podium" id="podium"></div>
+      <p class="hint" style="text-align:center">📍 Venue: Fish, Sausalito. Yes, again. Bring cash — and possibly a co-signer.</p>
     </div>
 
     <div class="card">
@@ -273,7 +282,8 @@
 
   <footer>
     Built by Nik's robot so nobody has to scroll a 74-message group text.<br>
-    Powered by dad reflexes <span class="heart">♥</span> and one (1) free weeknight.
+    Powered by dad reflexes <span class="heart">♥</span> and one (1) free weeknight.<br>
+    Venue selection powered by inevitability™.
   </footer>
 </div>
 
@@ -286,14 +296,43 @@ const JOKES = [
   "I'd tell you a joke about a night out, but it's still out.",
   "We'll pick the winning night soon. Hi 'Soon' — I'm Dad.",
   "Your availability has been filed under 'miracle.'",
-  "A night out with the dads? That's what I call out-standing in your field. Or bar.",
   "Don't worry, we'll pencil it in. With a pen. Like men.",
+  "The date is a democracy. The venue is a dictatorship. It's Fish.",
+  "Start setting aside cash now. Fish doesn't take 'maybe.'",
+];
+const VENUES = [
+  "Fish.",
+  "fish (lowercase, same prices)",
+  "That overpriced seafood place on the water",
+  "Literally anywhere else",
+];
+const VENUE_VERDICTS = [
+  "Correct. See you at Fish.",
+  "Bold formatting choice. Still Fish.",
+  "You mean Fish. Noted as: Fish.",
+  "Petition received. Petition denied. It's Fish.",
 ];
 
 let selectedName = null;
 let selectedDates = new Set();
 
 /* ---------- name chips ---------- */
+function buildVenueChips() {
+  const wrap = document.getElementById('venueChips');
+  VENUES.forEach((v, i) => {
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = v;
+    b.onclick = () => {
+      document.querySelectorAll('#venueChips .chip').forEach(c => { c.classList.remove('on'); });
+      document.querySelectorAll('#venueChips .chip')[0].classList.add('on');
+      const verdict = document.getElementById('venueVerdict');
+      verdict.textContent = VENUE_VERDICTS[i];
+      verdict.style.display = 'block';
+    };
+    wrap.appendChild(b);
+  });
+}
 function buildChips() {
   const wrap = document.getElementById('nameChips');
   [...KNOWN_DADS, MYSTERY].forEach(n => {
@@ -385,7 +424,7 @@ async function submitResponse() {
     localStorage.setItem('wfd_name', selectedName);
     const card = document.getElementById('successCard');
     document.getElementById('successText').innerHTML =
-      `Thanks, <b>${escapeHtml(selectedName)}</b> — ${selectedDates.size} night${selectedDates.size>1?'s':''} logged. When every dad reports in, the winning night gets crowned on the results tab.`;
+      `Thanks, <b>${escapeHtml(selectedName)}</b> — ${selectedDates.size} night${selectedDates.size>1?'s':''} logged. When every dad reports in, the winning night gets crowned on the results tab. The venue, of course, was never up for debate.`;
     document.getElementById('successJoke').textContent = JOKES[Math.floor(Math.random() * JOKES.length)];
     card.classList.add('show');
     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -485,6 +524,7 @@ function confetti() {
 
 /* ---------- init ---------- */
 buildChips();
+buildVenueChips();
 buildCalendar();
 if (location.hash === '#results') showView('results');
 </script>
