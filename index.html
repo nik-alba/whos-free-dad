@@ -185,6 +185,13 @@
   #successCard.show { display: block; animation: pop .4s cubic-bezier(.2, 1.6, .4, 1); }
   @keyframes pop { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   #successCard .big { font-size: 46px; margin-bottom: 8px; }
+  .vid-wrap { position: relative; margin: 0 auto 10px; max-width: 240px; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 12px 34px rgba(0,0,0,.45); background: #000; }
+  .vid-wrap video { display: block; width: 100%; }
+  #muteBtn {
+    position: absolute; bottom: 8px; right: 8px; border: 0; cursor: pointer;
+    background: rgba(20,24,31,.78); color: var(--ink); font: 700 11.5px 'Inter', sans-serif;
+    padding: 7px 11px; border-radius: 999px; backdrop-filter: blur(4px);
+  }
   #successCard h2 { font-family: 'Alfa Slab One', serif; font-weight: 400; color: var(--green); font-size: 24px; margin-bottom: 10px; }
   #successCard p { color: var(--ink-dim); font-size: 14.5px; line-height: 1.55; }
   #successCard .joke { margin-top: 14px; font-style: italic; color: var(--ink-faint); font-size: 13px; }
@@ -340,7 +347,11 @@
     </div>
 
     <div class="card" id="successCard">
-      <div class="big">🍻</div>
+      <div class="vid-wrap">
+        <video id="sessionVid" src="session.mp4" playsinline muted loop preload="metadata"></video>
+        <button id="muteBtn" onclick="toggleMute()">🔇 Sound on</button>
+      </div>
+      <p class="hint" style="margin-bottom:14px">Live footage of the group receiving your availability.</p>
       <h2>You're on the board!</h2>
       <p id="successText"></p>
       <p class="joke" id="successJoke"></p>
@@ -544,6 +555,9 @@ async function submitResponse() {
     document.getElementById('successJoke').textContent = JOKES[Math.floor(Math.random() * JOKES.length)];
     card.classList.add('show');
     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const vid = document.getElementById('sessionVid');
+    vid.currentTime = 0;
+    vid.play().catch(() => {});
     confetti();
     btn.textContent = 'Update my answer ✏️';
     fetchData().then(decorateCalendar).catch(() => {});
@@ -555,6 +569,12 @@ async function submitResponse() {
   }
 }
 function showErr(m) { const e = document.getElementById('errorMsg'); e.textContent = m; e.style.display = 'block'; }
+function toggleMute() {
+  const v = document.getElementById('sessionVid');
+  v.muted = !v.muted;
+  if (!v.paused || v.muted) {} else { v.play().catch(() => {}); }
+  document.getElementById('muteBtn').textContent = v.muted ? '🔇 Sound on' : '🔊 Sound off';
+}
 function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
 /* ---------- results ---------- */
