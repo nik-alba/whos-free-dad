@@ -40,8 +40,9 @@
   .wrap { max-width: 560px; margin: 0 auto; padding: 0 20px; }
 
   /* ---------- header ---------- */
-  header { text-align: center; padding: 52px 0 8px; }
-  .moon { font-size: 44px; display: block; margin-bottom: 10px; filter: drop-shadow(0 4px 14px rgba(255,182,72,.35)); }
+  header { text-align: center; padding: 44px 0 8px; }
+  .dadface { display: block; margin: 0 auto 14px; filter: drop-shadow(0 8px 22px rgba(255,182,72,.28)); animation: dadbob 3.6s ease-in-out infinite; }
+  @keyframes dadbob { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
   h1 {
     font-family: 'Alfa Slab One', serif;
     font-weight: 400;
@@ -234,7 +235,41 @@
 <div class="wrap">
 
   <header>
-    <span class="moon">🌙</span>
+    <svg class="dadface" width="130" height="130" viewBox="0 0 120 120" aria-hidden="true">
+      <defs><clipPath id="badge"><circle cx="60" cy="60" r="55"/></clipPath></defs>
+      <circle cx="60" cy="60" r="55" fill="#f6eedd"/>
+      <g clip-path="url(#badge)">
+        <g stroke="#eddcb4" stroke-width="7">
+          <line x1="60" y1="60" x2="60" y2="-2"/>
+          <line x1="60" y1="60" x2="112" y2="18"/>
+          <line x1="60" y1="60" x2="8" y2="18"/>
+          <line x1="60" y1="60" x2="118" y2="52"/>
+          <line x1="60" y1="60" x2="2" y2="52"/>
+        </g>
+        <path d="M24 118 Q26 96 42 92 L78 92 Q94 96 96 118 Z" fill="#c9563c"/>
+        <rect x="52" y="80" width="16" height="16" fill="#e8a97a"/>
+        <path d="M42 92 L60 100 L52 108 L40 96 Z" fill="#fdf8ec"/>
+        <path d="M78 92 L60 100 L68 108 L80 96 Z" fill="#fdf8ec"/>
+        <path d="M60 100 L54 108 L60 122 L66 108 Z" fill="#ffb648"/>
+        <ellipse cx="35" cy="64" rx="5" ry="6" fill="#eeb586" stroke="#3a2a1a" stroke-width="2"/>
+        <ellipse cx="85" cy="64" rx="5" ry="6" fill="#eeb586" stroke="#3a2a1a" stroke-width="2"/>
+        <ellipse cx="60" cy="60" rx="25" ry="28" fill="#eeb586" stroke="#3a2a1a" stroke-width="2.5"/>
+        <path d="M35 55 Q34 32 60 29 Q84 31 85 54 L85 48 Q84 38 70 37 Q52 35 44 42 Q38 47 37 55 Z" fill="#4a3626"/>
+        <rect x="38" y="52" width="17" height="13" rx="5" fill="none" stroke="#2b2118" stroke-width="3.5"/>
+        <rect x="65" y="52" width="17" height="13" rx="5" fill="none" stroke="#2b2118" stroke-width="3.5"/>
+        <line x1="55" y1="57" x2="65" y2="57" stroke="#2b2118" stroke-width="3.5"/>
+        <circle cx="46.5" cy="58.5" r="2" fill="#2b2118"/>
+        <circle cx="73.5" cy="58.5" r="2" fill="#2b2118"/>
+        <path d="M60 60 Q64 68 59 71" fill="none" stroke="#c98d5f" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M45 76 Q52 70 60 73 Q68 70 75 76 Q70 81 62 78 L60 77 L58 78 Q50 81 45 76 Z" fill="#4a3626"/>
+        <path d="M48 81 Q60 93 72 81 Q60 86 48 81 Z" fill="#fff" stroke="#2b2118" stroke-width="2" stroke-linejoin="round"/>
+      </g>
+      <circle cx="60" cy="60" r="55" fill="none" stroke="#ffb648" stroke-width="4"/>
+      <g transform="translate(94 92) rotate(10)">
+        <circle r="15" fill="#ffb648" stroke="#14181f" stroke-width="3"/>
+        <text x="0" y="6" font-size="17" text-anchor="middle">👍</text>
+      </g>
+    </svg>
     <h1>WHO'S FREE,<span class="white">DAD?</span></h1>
     <p class="tagline">One night out. <b>Six dads.</b> Zero group-text chaos.<br>Tap the nights you can escape. Takes 20 seconds.</p>
   </header>
