@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Take review</title>
+<style>body{background:#14181f;color:#eee;font-family:sans-serif;display:flex;gap:12px;padding:12px}
+.col{flex:1;text-align:center}video{width:100%;border-radius:8px}</style></head>
+<body>
+<div class="col"><h3>A</h3><video id="vA" src="take_A.mp4" muted playsinline></video></div>
+<div class="col"><h3>B</h3><video id="vB" src="take_B.mp4" muted playsinline></video></div>
+<div class="col"><h3>C</h3><video id="vC" src="take_C.mp4" muted playsinline></video></div>
+<script>function seekAll(t){['vA','vB','vC'].forEach(id=>{const v=document.getElementById(id);v.currentTime=t;v.pause();});}</script>
+</body></html>
