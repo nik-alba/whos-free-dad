@@ -195,7 +195,7 @@
   <header>
     <span class="moon">🌙</span>
     <h1>WHO'S FREE,<span class="white">DAD?</span></h1>
-    <p class="tagline">One night out. <b>Seven dads.</b> Zero group-text chaos.<br>Tap the nights you can escape. Takes 20 seconds.</p>
+    <p class="tagline">One night out. <b>Six dads.</b> Zero group-text chaos.<br>Tap the nights you can escape. Takes 20 seconds.</p>
   </header>
 
   <div class="tabs">
@@ -213,7 +213,7 @@
       <div class="chips" id="nameChips"></div>
       <div id="otherNameRow">
         <input type="text" id="otherName" maxlength="30" placeholder="It's okay. Just type your name." autocomplete="off">
-        <p class="hint" id="otherHint">Nik apologizes in advance. He knows exactly one guy he forgot.</p>
+        <p class="hint" id="otherHint">Nik apologizes in advance. It's happened before.</p>
       </div>
     </div>
 
@@ -289,8 +289,8 @@
 
 <script>
 const HOOK = 'https://hook.us2.make.com/z91dttbxs3moh5kqmji7w7r3ezkls1u8';
-const KNOWN_DADS = ['Nik', 'Jason', 'Jason (the other one)', 'Henry', 'Lance', 'The Therapist'];
-const MYSTERY = "The Dad Nik Forgot 😬";
+const KNOWN_DADS = ['Nik', 'Lance', 'Alex', 'Henry', 'Jason', 'David'];
+const MYSTERY = "Not listed? (Nik strikes again) 😬";
 const WEEKS_AHEAD = 6;
 const JOKES = [
   "I'd tell you a joke about a night out, but it's still out.",
@@ -453,7 +453,7 @@ async function loadResults(manual) {
     return;
   }
   data = (data || []).filter(x => x && x.name);
-  const total = Math.max(data.length, 7);
+  const total = Math.max(data.length, KNOWN_DADS.length);
   const counts = {};
   data.forEach(p => (p.dates || []).forEach(d => { (counts[d] = counts[d] || []).push(p.name); }));
   const ranked = Object.entries(counts).sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]));
