@@ -116,6 +116,14 @@
   .day:active { transform: scale(.9); }
   .day.on { background: var(--green); border-color: var(--green); color: #0c2416; font-weight: 800; box-shadow: 0 0 0 3px var(--green-dim); }
   .day.on::after { content: '✓'; position: absolute; top: 2px; right: 5px; font-size: 8px; }
+  .day .picks { position: absolute; bottom: 1px; left: 1px; right: 1px; display: flex; flex-wrap: wrap; justify-content: center; column-gap: 1px; font-size: 8px; line-height: 8px; pointer-events: none; }
+  .day.ooo:not(.on) { background-image: repeating-linear-gradient(45deg, rgba(255,122,110,.13) 0 4px, transparent 4px 9px); border-color: rgba(255,122,110,.28); }
+  .day.ooo::before { content: attr(data-ooo); position: absolute; top: 1px; left: 2px; font-size: 8px; line-height: 1; }
+  .legend-ooo { margin-top: 10px; font-size: 12px; color: var(--ink-faint); font-weight: 600; text-align: center; line-height: 1.7; }
+  .cast-row { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; color: var(--ink-dim); line-height: 1.45; }
+  .cast-row:last-child { border-bottom: 0; }
+  .cast-row .ic { font-size: 20px; flex-shrink: 0; width: 26px; text-align: center; }
+  .cast-row b { color: var(--ink); }
   .legend { display: flex; gap: 16px; justify-content: center; margin-top: 14px; font-size: 12px; color: var(--ink-faint); font-weight: 600; }
   .legend span::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; }
   .legend .l-wk::before { background: #2a3140; border: 1px solid rgba(255,182,72,.3); }
@@ -223,6 +231,10 @@
       </div>
       <div id="calendar"></div>
       <div class="legend"><span class="l-wk">Weekend</span><span class="l-on">I'm free</span></div>
+      <div class="legend-ooo">
+        🥂 Jul 27 – Aug 3 · Nik's bachelor trip &nbsp;·&nbsp; 💍 Aug 24 – Sep 1 · Nik's wedding<br>
+        Striped days = Nik's out. You may still meet without him. And discuss him.
+      </div>
       <div class="count-pill" id="countPill">No nights picked yet. The couch wins again.</div>
     </div>
 
@@ -239,6 +251,19 @@
       </div>
       <div class="chips" id="venueChips"></div>
       <p class="hint" id="venueVerdict" style="display:none"></p>
+    </div>
+
+    <div class="card">
+      <div class="step"><span class="n">🧠</span>
+        <div><h2>Know your dads</h2><small>Statistically, someone in this group is analyzing you right now.</small></div>
+      </div>
+      <div class="cast-row"><span class="ic">🛋️</span><span><b>Lance</b> — Psychoanalyst. The couch is technically his office.</span></div>
+      <div class="cast-row"><span class="ic">🧠</span><span><b>Alex</b> — Therapist.</span></div>
+      <div class="cast-row"><span class="ic">🕰️</span><span><b>David</b> — Therapist. "I'm afraid our time is up."</span></div>
+      <div class="cast-row"><span class="ic">⚖️</span><span><b>Henry</b> — Lawyer. Bills like a therapist, minus the empathy.</span></div>
+      <div class="cast-row"><span class="ic">🎸</span><span><b>Jason</b> — Rock star. Which is technically sound therapy.</span></div>
+      <div class="cast-row"><span class="ic">🤵</span><span><b>Nik</b> — Groom-to-be. The only dad here you can't book a session with.</span></div>
+      <p class="hint" style="text-align:center">Half this group can diagnose you. One can sue you. One can write a song about it.</p>
     </div>
 
     <button class="cta" id="submitBtn" onclick="submitResponse()">Lock it in 🔒</button>
@@ -291,7 +316,19 @@
 const HOOK = 'https://hook.us2.make.com/z91dttbxs3moh5kqmji7w7r3ezkls1u8';
 const KNOWN_DADS = ['Nik', 'Lance', 'Alex', 'Henry', 'Jason', 'David'];
 const MYSTERY = "Not listed? (Nik strikes again) 😬";
-const WEEKS_AHEAD = 6;
+const WEEKS_AHEAD = 8;
+const DAD_META = {
+  nik:   { icon: '🤵' },
+  lance: { icon: '🛋️' },
+  alex:  { icon: '🧠' },
+  david: { icon: '🕰️' },
+  henry: { icon: '⚖️' },
+  jason: { icon: '🎸' },
+};
+const OOO = [
+  { label: "Nik's bachelor trip", icon: '🥂', start: '2026-07-27', end: '2026-08-03' },
+  { label: "Nik's wedding", icon: '💍', start: '2026-08-24', end: '2026-09-01' },
+];
 const JOKES = [
   "I'd tell you a joke about a night out, but it's still out.",
   "We'll pick the winning night soon. Hi 'Soon' — I'm Dad.",
@@ -299,6 +336,8 @@ const JOKES = [
   "Don't worry, we'll pencil it in. With a pen. Like men.",
   "The date is a democracy. The venue is a dictatorship. It's Fish.",
   "Start setting aside cash now. Fish doesn't take 'maybe.'",
+  "Somewhere in this group, someone just asked how that made you feel. Odds are 3 in 6.",
+  "Picking a date IS avoidance behavior. Lance would agree.",
 ];
 const VENUES = [
   "Fish.",
@@ -309,8 +348,8 @@ const VENUES = [
 const VENUE_VERDICTS = [
   "Correct. See you at Fish.",
   "Bold formatting choice. Still Fish.",
-  "You mean Fish. Noted as: Fish.",
-  "Petition received. Petition denied. It's Fish.",
+  "Interesting choice. And how does Fish make you feel?",
+  "Petition received. Petition denied. It's Fish. This resistance is worth exploring in session.",
 ];
 
 let selectedName = null;
@@ -384,6 +423,8 @@ function buildCalendar() {
       b.className = 'day' + ((dow === 0 || dow === 5 || dow === 6) ? ' wknd' : '');
       b.textContent = d.getDate();
       b.dataset.iso = iso;
+      const ooo = OOO.find(o => iso >= o.start && iso <= o.end);
+      if (ooo) { b.classList.add('ooo'); b.dataset.ooo = ooo.icon; b.title = ooo.label + " — Nik's out (meet without him at your own risk)"; }
       b.onclick = () => {
         if (selectedDates.has(iso)) { selectedDates.delete(iso); b.classList.remove('on'); }
         else { selectedDates.add(iso); b.classList.add('on'); }
@@ -430,6 +471,7 @@ async function submitResponse() {
     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
     confetti();
     btn.textContent = 'Update my answer ✏️';
+    fetchData().then(decorateCalendar).catch(() => {});
   } catch (e) {
     showErr("Hmm, that didn't go through. Give it another shot — even the wifi is tired.");
   } finally {
@@ -441,18 +483,34 @@ function showErr(m) { const e = document.getElementById('errorMsg'); e.textConte
 function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
 /* ---------- results ---------- */
+async function fetchData() {
+  const r = await fetch(HOOK + '?action=results&t=' + Date.now());
+  const data = await r.json();
+  return (data || []).filter(x => x && x.name);
+}
+function dadIcon(name) {
+  return DAD_META[name.toLowerCase().trim()]?.icon || name[0].toUpperCase();
+}
+function decorateCalendar(data) {
+  const byDate = {};
+  data.forEach(p => (p.dates || []).forEach(d => { (byDate[d] = byDate[d] || []).push(p.name); }));
+  document.querySelectorAll('.day[data-iso]').forEach(btn => {
+    let span = btn.querySelector('.picks');
+    if (!span) { span = document.createElement('span'); span.className = 'picks'; btn.appendChild(span); }
+    span.textContent = (byDate[btn.dataset.iso] || []).map(dadIcon).join('');
+  });
+}
 async function loadResults(manual) {
   const podium = document.getElementById('podium');
   if (manual) podium.innerHTML = '<div class="empty-state">Checking on the dads…</div>';
   let data;
   try {
-    const r = await fetch(HOOK + '?action=results&t=' + Date.now());
-    data = await r.json();
+    data = await fetchData();
   } catch (e) {
     podium.innerHTML = '<div class="empty-state"><span class="big">📡</span>Could not reach HQ. Pull down to refresh, or blame the router like always.</div>';
     return;
   }
-  data = (data || []).filter(x => x && x.name);
+  decorateCalendar(data);
   const total = Math.max(data.length, KNOWN_DADS.length);
   const counts = {};
   data.forEach(p => (p.dates || []).forEach(d => { (counts[d] = counts[d] || []).push(p.name); }));
@@ -481,8 +539,8 @@ async function loadResults(manual) {
   const missing = KNOWN_DADS.filter(n => !respondedLower.includes(n.toLowerCase()));
   document.getElementById('rosterSub').textContent = `${responded.length} in · ${missing.length ? missing.length + ' dads still "checking with the boss"' : 'everyone reported for duty'}`;
   document.getElementById('roster').innerHTML =
-    responded.map(n => `<span class="tag in">✓ ${escapeHtml(n)}</span>`).join('') +
-    missing.map(n => `<span class="tag out">⏳ ${escapeHtml(n)}</span>`).join('');
+    responded.map(n => `<span class="tag in">✓ ${dadIcon(n)} ${escapeHtml(n)}</span>`).join('') +
+    missing.map(n => `<span class="tag out">${dadIcon(n)} ${escapeHtml(n)}…</span>`).join('');
   const notes = data.filter(p => p.note);
   document.getElementById('notesList').innerHTML = notes.length
     ? '<div style="margin-top:4px">' + notes.map(p => `<div class="note-line"><b>${escapeHtml(p.name)}:</b> “${escapeHtml(p.note)}”</div>`).join('') + '</div>' : '';
@@ -526,6 +584,7 @@ function confetti() {
 buildChips();
 buildVenueChips();
 buildCalendar();
+fetchData().then(decorateCalendar).catch(() => {});
 if (location.hash === '#results') showView('results');
 </script>
 </body>
